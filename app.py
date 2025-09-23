@@ -147,7 +147,6 @@ st.markdown("""
     div[data-baseweb="select"] { overflow: visible !important; z-index: 999 !important; }
     ul[role="listbox"] { z-index: 9999 !important; max-height: 300px !important; overflow-y: auto !important; }
 
-    /* ✅ NEW: Style for the result box to ensure text is visible */
     .result-box {
         background-color: #ffffff;
         border: 1px solid #e5e7eb;
@@ -171,13 +170,8 @@ st.markdown("""
 st.markdown("""
 <div class="app-header">
     <h1 class="app-title">📚 StudyPDF</h1>
-    <!-- ✅ Centered and widened description -->
-    <p class="app-subtitle" style="
-        max-width: 700px;
-        text-align: center;
-        margin: 0 auto;
-    ">
-        Transform your academic PDFs into interactive learning experiences. 
+    <p class="app-subtitle">
+        Transform your academic PDFs into interactive learning experiences.
         Upload, analyze, and get instant answers from textbooks, research papers, and lecture notes.
     </p>
 </div>
@@ -231,12 +225,15 @@ with col2:
         if not full_text.strip():
             st.error("❌ No text found in the PDF. This might be a scanned document that requires OCR processing.")
         else:
-            st.markdown('<div class="section-header">📄 Document Viewer</div>', unsafe_allow_html=True)
-            uploaded_file.seek(0)
-            file_bytes = uploaded_file.read()
-            base64_pdf = base64.b64encode(file_bytes).decode('utf-8')
-            pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" style="border: 1px solid #e5e7eb; border-radius: 12px;"></iframe>'
-            st.markdown(pdf_display, unsafe_allow_html=True)
+            # ✅ FINAL CHANGE: Using the reliable download button instead of an embedded viewer.
+            st.markdown('<div class="section-header">📄 Document</div>', unsafe_allow_html=True)
+            st.download_button(
+                label="📂 Click here to View or Download PDF",
+                data=uploaded_file,
+                file_name=uploaded_file.name,
+                mime="application/pdf",
+                use_container_width=True
+            )
 
             st.markdown(f"""
             <div style="display:flex; gap:1rem; margin:1rem 0; font-size:0.9rem; color:#6b7280;">
@@ -266,7 +263,6 @@ with col2:
                         try:
                             result = call_groq(prompt)
                             
-                            # ✅ UPDATED: This section now uses the new CSS class to ensure visibility.
                             st.markdown('<div class="section-header">✨ Analysis Result</div>', unsafe_allow_html=True)
                             st.markdown(f'<div class="result-box">{result}</div>', unsafe_allow_html=True)
                             
