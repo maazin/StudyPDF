@@ -1,4 +1,5 @@
 streamlit
 groq
 pdfplumber
-transformers
+python-dotenv
+textwrap3
